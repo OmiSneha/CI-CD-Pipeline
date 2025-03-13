@@ -1,36 +1,30 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_IMAGE = 'node-app:latest'
-    }
-
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/YOUR_USERNAME/node-ci-cd.git'
+                git 'https://github.com/OmiSneha/CI-CD-Pipeline.git'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Install Dependencies') {
             steps {
-                sh 'docker build -t $DOCKER_IMAGE .'
+                sh 'npm install'
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'docker run --rm $DOCKER_IMAGE npm test'
+                sh 'npm test'
             }
         }
 
         stage('Deploy Locally') {
             steps {
-                sh """
-                    docker stop node-app || true
-                    docker rm node-app || true
-                    docker run -d -p 3000:3000 --name node-app $DOCKER_IMAGE
-                """
+                sh 'nohup node server.js &'
+
+
             }
         }
     }
